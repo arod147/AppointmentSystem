@@ -2,8 +2,6 @@
 import { Route, Routes } from "react-router-dom";
 
 // We import all the components we need in our app
-import Signup from "./components/signup";
-import Login from "./components/login";
 import Homepage from "./components/homepage";
 import Header from "./components/header";
 import Footer from "./components/footer";
@@ -15,9 +13,7 @@ const App = () => {
       <Header />
       <div style={{ margin: 20 }}>
       <Routes>
-        <Route exact path="/" element={<Login />} />
-        <Route path='/signup' element={<Signup />}/>
-        <Route path='/homepage' element={<Homepage />}/>
+        <Route path='/' element={<Homepage />}/>
       </Routes>
       </div>
       <Footer />
