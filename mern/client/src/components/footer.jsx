@@ -1,6 +1,6 @@
 const Footer = () => {
     return (
-        <div className="text-center sticky-bottom">
+        <div className="text-center fixed-bottom">
             <h4>Footer</h4>
         </div>
     )
