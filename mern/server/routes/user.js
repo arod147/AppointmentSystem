@@ -41,7 +41,8 @@ userRoutes.route('/user/add').post((req, response) => {
     User.create({
         username: req.body.userName,
         password: req.body.passWord,
-        email: req.body.email
+        email: req.body.email,
+        position: req.body.position,
     }, (err, res) => {
         if (err) throw err;
         response.json(res)

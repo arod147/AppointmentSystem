@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Homepage from "./components/homepage";
 import Header from "./components/header";
 import Footer from "./components/footer";
+import CreateAppointment from "./components/createAppoinment";
 
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
       <div style={{ margin: 20 }}>
       <Routes>
         <Route path='/' element={<Homepage />}/>
+        <Route path='/createAppoinment' element={<CreateAppointment />}/>
       </Routes>
       </div>
       <Footer />
