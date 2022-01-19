@@ -6,6 +6,11 @@ import Homepage from "./components/homepage";
 import Header from "./components/header";
 import Footer from "./components/footer";
 import CreateAppointment from "./components/createAppoinment";
+import ManagerPage from "./companyComponents/managerPage";
+import EmployeePage from "./companyComponents/employeePage";
+import Signup from "./companyComponents/signup";
+import Login from "./companyComponents/login";
+import CreateSchedule from "./companyComponents/createSchedule";
 
 
 const App = () => {
@@ -16,6 +21,11 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Homepage />}/>
         <Route path='/createAppoinment' element={<CreateAppointment />}/>
+        <Route path='/employeePage' element={<EmployeePage />}/>
+        <Route path='/managerPage' element={<ManagerPage />}/>
+        <Route path='/login' element={<Login />}/>
+        <Route path='/signup' element={<Signup />}/>
+        <Route path='/createSchedule' element={<CreateSchedule />}/>
       </Routes>
       </div>
       <Footer />

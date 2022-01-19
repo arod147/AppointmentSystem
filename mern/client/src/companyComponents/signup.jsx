@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Button, Form, FormControl, FormGroup, FormLabel, FormText } from 'react-bootstrap';
+import { useState } from 'react'
+import { Button, Form, FormControl, FormGroup, FormLabel, FormText, FormSelect } from 'react-bootstrap';
 import { useNavigate } from 'react-router'
 
 const Signup = () => {
@@ -87,7 +87,10 @@ const Signup = () => {
                 </FormGroup>
                 <FormGroup className='m-4'>
                     <FormLabel>Position</FormLabel>
-                    <FormSelect aria-label="Default select example">
+                    <FormSelect 
+                        value={form.position}
+                        onChange={(e) => updateForm({ position: e.target.value})}
+                        aria-label="Default select example">
                         <option>Choose Staff employee</option>
                         <option value="employee">Employee</option>
                         <option value="manager">Manager</option>

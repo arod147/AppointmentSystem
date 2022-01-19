@@ -1,13 +1,10 @@
 import { Button, Form, FormControl, FormGroup, FormLabel, FormSelect, Row, Col, ButtonGroup } from "react-bootstrap"
-import Calendar from "react-calendar"
-import { useEffect, useState } from 'react'
-import 'react-calendar/dist/Calendar.css';
+import { useEffect } from 'react'
 //First and last name
 //Service type
 //Date and time
 //Email address for comfirmation
 const CreateAppointment = () => {
-    const [value, onChange] = useState(new Date())
     useEffect(() => {
 
     }, [])
@@ -26,16 +23,7 @@ const CreateAppointment = () => {
                 <Row>
                     <FormGroup className="mb-4" as={Col}>
                         <FormLabel>Date</FormLabel>
-                        <Calendar
-                            minDetail="month"
-                            nextLabel={null}
-                            next2Label={null}
-                            prevLabel={null}
-                            prev2Label={null}
-                            showNeighboringMonth={false}
-                            onChange={onChange}
-                            value={value}
-                        />
+                        
                     </FormGroup>
                     <FormGroup className="mb-4" as={Col}>
                         <FormLabel>Time</FormLabel>
