@@ -21,7 +21,7 @@ const CreateAppointment = () => {
             availableDays: [
                 {
                     date: value,
-                    times: ['1:00pm', '2:00pm']
+                    times: ['1:00pm', '2:00pm', '3:00pm']
                 }
             ]
         }
