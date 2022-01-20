@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Form, FormGroup, FormLabel, FormSelect, Modal, ModalBody, ModalTitle } from 'react-bootstrap'
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import Calendar from 'react-calendar'
@@ -11,29 +11,34 @@ const CreateSchedule = () => {
     const [showAdd, setShowAdd] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [list, updateList] = useState([])
-    const [x, xSet] = useState(
-        [
-            {
-                name: 'Alex',
-                age: 27
-            },
-            {
-                name: 'Mark',
-                age: 28
-            },
-        ]
-    );
+
+    useEffect(() => {
+       console.log(list)
+    }, [list])
+
     const handleClose = () => {
         setShowAdd(false)
         setShowEdit(false)
     }
 
+    const handleAdd = (index, todo) => {
+        const newList = [...list];
+        newList[index].days.push(todo)
+        updateList(newList)
+    } 
+
+    const handleUpdate = (index, innerIndex, todo) => {
+        const newList = [...list];
+        newList[index].days[innerIndex] = todo;
+        updateList(newList)
+    }
+
     const handleShowAdd = () => setShowAdd(true);
     const handleShowEdit = () => setShowEdit(true);
-    
+
     const [form, setForm] = useState({
-        date: Date,
         employee: '',
+        date: Date,
         startTime: 0,
         endTime: 0
     })
@@ -45,43 +50,78 @@ const CreateSchedule = () => {
     }
 
     //Handles adding and editing our schedule
+    //Need to fix submit
+    //Bugs
+    // 1. when adding to days array -1 index is pushed???
+    // 2. When updating name for date need to remove that date from employee days list
+    // 3. onDelete needs to be able to remove a date from dats list
     function onSubmit(e) {
         e.preventDefault();
         const employee = { ...form}
-        const employeeIndex = list.findIndex(curr => curr.date.getDate() === employee.date.getDate())
-
-        if (employeeIndex !== -1) {
-            updateList(list.map((item, index) => {
-                return index === employeeIndex ? employee : item;
-            }));
-            return setForm({ date: Date, employee: '', });
+        const newEmployee = {
+            employee: employee.employee,
+                days: [
+                    {
+                        date: employee.date,
+                        startTime: employee.startTime,
+                        endTime: employee.endTime,
+                    }
+                ]
+        }
+        //need to find employee who has selected date to see if we need to delete it fom there days list
+        const findEmployee = list.find(emp => emp.employee === employee.employee)
+        const employeeIndex = list.findIndex(emp => emp.employee === employee.employee)
+        if (findEmployee !== undefined) {
+            const findDay = findEmployee.days.findIndex(day => day.date.getDate() === employee.date.getDate());
+            if (findDay !== undefined) {
+                handleUpdate(employeeIndex, findDay, newEmployee.days[0])
+                setForm({ date: Date, employee: '', })
+                return handleClose();
+            }
+            handleAdd(employeeIndex, newEmployee.days[0])
+            setForm({ date: Date, employee: '', })
+            return handleClose();
         }
 
-        updateList(currentList => [...currentList, employee])
+        updateList(currentList => [...currentList, newEmployee])
         setForm({ date: Date, employee: '', })
         handleClose();
     }
 
     function onDelete() {
-        updateList(list.filter(item => item.date.getDate() !== form.date.getDate()));
-        setForm({ date: Date, employee: '', });
-        handleClose();
+        const foundEmployee = list.find(item => item.employee === form.employee)
+        if(foundEmployee.days.length === 1) {
+            updateList(list.filter(item => item.employee !== form.employee))
+            setForm({ date: Date, employee: '', });
+            return handleClose()
+        }
+        //const employeeIndex = list.findIndex(item => item.employee === form.employee)
+        //updateList(list[employeeIndex].days.fliter(day => day.date.getDate() !== form.date.getDate()));
+        //setForm({ date: Date, employee: '', });
+        //handleClose();
     };
 
     //Display first four letters of scheduled employee name
     function tileContent({date}) {
-        const employee = list.find(curr => curr.date.getDate() === date.getDate())
+        const employee = list.find(item => {
+            const foundDate = item.days.find(day => day.date.getDate() === date.getDate())
+            return foundDate !== undefined
+        })
         if (employee !== undefined) {
             return <p className='mt-3'>{employee.employee.substr(0, 4)}</p>
         }
     }
     //Display add or edit for current date
     function modifyDate(date) {
-        const employee = list.find(curr => curr.date.getDate() === date.getDate())
+        let foundDate;
+        const employee = list.find(item => {
+            foundDate = item.days.find(day => day.date.getDate() === date.getDate())
+            return foundDate !== undefined
+        })
         if (employee === undefined) {
             return handleShowAdd()
         } else {
-            updateForm(employee)
+            updateForm({employee: employee.employee, date: foundDate.date, startTime: foundDate.startTime, endTime: foundDate.endTime })
             return handleShowEdit()
         }
     }
@@ -194,7 +234,6 @@ const CreateSchedule = () => {
 
     async function submitCalandar(e) {
         e.preventDefault();
-        const list = x 
 
         await fetch('http://localhost:5000/addSchdule', {
             method: 'POST',

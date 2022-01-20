@@ -11,7 +11,7 @@ appointmentRoutes.route('/fullAppointments').get((req, res) => {
         res.json(result);
     });
 });
-
+//Add a new schedule to database
 appointmentRoutes.route('/addSchdule').post((req, response) => {
     console.log(req.body)
     Appointment.insertMany(req.body.map(current => {
