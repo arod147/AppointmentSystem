@@ -24,6 +24,7 @@ connection.once('open', () => {
 });
 
 app.use(require('./routes/user'))
+app.use(require('./routes/appointment'))
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);

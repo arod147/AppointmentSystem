@@ -3,13 +3,26 @@ import { Button, Form, FormGroup, FormLabel, FormSelect, Modal, ModalBody, Modal
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
+import { useNavigate } from 'react-router'
 
 const CreateSchedule = () => {
+    const navigate = useNavigate();
     const [value, onChange] = useState(new Date())
     const [showAdd, setShowAdd] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [list, updateList] = useState([])
-
+    const [x, xSet] = useState(
+        [
+            {
+                name: 'Alex',
+                age: 27
+            },
+            {
+                name: 'Mark',
+                age: 28
+            },
+        ]
+    );
     const handleClose = () => {
         setShowAdd(false)
         setShowEdit(false)
@@ -179,11 +192,31 @@ const CreateSchedule = () => {
         </Modal>
     )
 
+    async function submitCalandar(e) {
+        e.preventDefault();
+        const list = x 
+
+        await fetch('http://localhost:5000/addSchdule', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(list),
+        })
+        .catch(error => {
+            window.alert('Error inserting');
+            navigate('/managerPage');
+            return;
+        });
+
+        navigate('/createSchedule');
+    }
+
     return (
         <div>
             {addModal}
             {editModal}
-            <Form>
+            <Form onSubmit={submitCalandar}>
                 <FormGroup className='mb-4'>
                     <FormLabel></FormLabel>
                     <Calendar
@@ -200,6 +233,7 @@ const CreateSchedule = () => {
                         onClickDay={(e) => modifyDate(e)}
                     />
                 </FormGroup>
+                <Button type='submit'>Create Schedule</Button>
             </Form>
         </div>
     )
