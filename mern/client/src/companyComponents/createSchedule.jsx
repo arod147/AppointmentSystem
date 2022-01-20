@@ -25,7 +25,15 @@ const CreateSchedule = () => {
         const newList = [...list];
         newList[index].days.push(todo)
         updateList(newList)
-    } 
+    }
+
+    const handleRemove = (index, date) => {
+        const newList = [...list];
+        const filteredList = newList[index].days.filter(day => {
+            return day.date.getDate() !== date
+        });
+        updateList(filteredList)
+    }
 
     const handleUpdate = (index, innerIndex, todo) => {
         const newList = [...list];
@@ -52,10 +60,8 @@ const CreateSchedule = () => {
     //Handles adding and editing our schedule
     //Need to fix submit
     //Bugs
-    // 1. when adding to days array -1 index is pushed???
-    // 2. When updating name for date need to remove that date from employee days list
     // 3. onDelete needs to be able to remove a date from dats list
-    function onSubmit(e) {
+    async function onSubmit(e) {
         e.preventDefault();
         const employee = { ...form}
         const newEmployee = {
@@ -68,17 +74,42 @@ const CreateSchedule = () => {
                     }
                 ]
         }
-        //need to find employee who has selected date to see if we need to delete it fom there days list
-        const findEmployee = list.find(emp => emp.employee === employee.employee)
-        const employeeIndex = list.findIndex(emp => emp.employee === employee.employee)
+
+        const findEmployee = list.find(emp => {
+            const day = emp.days.find(day => employee.date.getDate() === day.date.getDate())
+            return day !== undefined   
+        })
+        const employeeIndex = list.findIndex(emp => {
+            const day = emp.days.find(day => employee.date.getDate() === day.date.getDate())
+            return day !== undefined   
+        })
+
+        const findEmployeeName = list.find(emp => emp.employee === employee.employee)
+
         if (findEmployee !== undefined) {
-            const findDay = findEmployee.days.findIndex(day => day.date.getDate() === employee.date.getDate());
-            if (findDay !== undefined) {
-                handleUpdate(employeeIndex, findDay, newEmployee.days[0])
+            if (findEmployeeName !== undefined) {
+                const findDayIndex = findEmployee.days.findIndex(day => day.date.getDate() === employee.date.getDate());
+                if (employee.employee === findEmployee.employee) {
+                    handleUpdate(employeeIndex, findDayIndex, newEmployee.days[0])
+                    setForm({ date: Date, employee: '', })
+                    return handleClose();
+                }
+                handleRemove(employeeIndex, employee.date.getDate())
+
+                const employeeNameIndex = list.findIndex(emp => emp.employee === employee.employee)
+                handleAdd(employeeNameIndex, newEmployee.days[0])
                 setForm({ date: Date, employee: '', })
                 return handleClose();
             }
-            handleAdd(employeeIndex, newEmployee.days[0])
+            handleRemove(employeeIndex, employee.date.getDate())
+            updateList(currentList => [...currentList, newEmployee])
+            setForm({ date: Date, employee: '', })
+            return handleClose();    
+        }
+
+        if (findEmployeeName !== undefined) {
+            const employeeNameIndex = list.findIndex(emp => emp.employee === employee.employee)
+            handleAdd(employeeNameIndex, newEmployee.days[0])
             setForm({ date: Date, employee: '', })
             return handleClose();
         }
