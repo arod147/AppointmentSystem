@@ -49,7 +49,8 @@ const Signup = () => {
             <Form onSubmit={onSubmit} className='m-5 border border-5 border-dark rounded'>
                 <FormGroup className='m-4'>
                     <FormLabel>Username</FormLabel>
-                    <FormControl 
+                    <FormControl
+                        required
                         className='text-center'
                         type='text'
                         id='username'
@@ -61,6 +62,7 @@ const Signup = () => {
                 <FormGroup className='m-4'>
                     <FormLabel>Password</FormLabel>
                     <FormControl
+                        required
                         className='text-center' 
                         type='password'
                         id='password'
@@ -77,6 +79,7 @@ const Signup = () => {
                 <FormGroup className='m-4'>
                     <FormLabel>Email</FormLabel>
                     <FormControl
+                        required
                         className='text-center' 
                         type='email'
                         id='email'
@@ -87,11 +90,12 @@ const Signup = () => {
                 </FormGroup>
                 <FormGroup className='m-4'>
                     <FormLabel>Position</FormLabel>
-                    <FormSelect 
+                    <FormSelect
+                        required
                         value={form.position}
                         onChange={(e) => updateForm({ position: e.target.value})}
                         aria-label="Default select example">
-                        <option>Choose Staff employee</option>
+                        <option value="">Choose Staff employee</option>
                         <option value="employee">Employee</option>
                         <option value="manager">Manager</option>
                     </FormSelect>

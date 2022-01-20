@@ -25,38 +25,38 @@ const Login = () => {
     }
     
     async function onSubmit(e) {
-        setLoading({ status: true, hide: false })
-        e.preventDefault();
-        const loginInfo = {
-            username: form.username,
-            password: form.password,
-        };
-
-        const response = await fetch(`http://localhost:5000/user/${loginInfo.username}/${loginInfo.password} `);
-
-        if (!response.ok) {
-            const message = `An error has occured: ${response.statusText}`;
-            window.alert(message);
+            setLoading({ status: true, hide: false })
+            e.preventDefault();
+            const loginInfo = {
+                username: form.username,
+                password: form.password,
+            };
+    
+            const response = await fetch(`http://localhost:5000/user/${loginInfo.username}/${loginInfo.password} `);
+    
+            if (!response.ok) {
+                const message = `An error has occured: ${response.statusText}`;
+                window.alert(message);
+                setLoading({ status: false, hide: true })
+                return;
+            }
+    
+            const user = await response.json();
+            if (!user) {
+                window.alert(`Password or username invalid.`);
+                navigate('/login')
+                setLoading({ status: false, hide: true })
+                return;
+            }
+    
+            dispatch(setUserName(loginInfo.username))
+            setForm({ username: '', password: '' })
             setLoading({ status: false, hide: true })
-            return;
-        }
-
-        const user = await response.json();
-        if (!user) {
-            window.alert(`Password or username invalid.`);
-            navigate('/login')
-            setLoading({ status: false, hide: true })
-            return;
-        }
-
-        dispatch(setUserName(loginInfo.username))
-        setForm({ username: '', password: '' })
-        setLoading({ status: false, hide: true })
-        if (user.position === 'manager') {
-            navigate('/managerPage');
-        } else {
-            navigate('/employeePage')
-        }
+            if (user.position === 'manager') {
+                navigate('/managerPage');
+            } else {
+                navigate('/employeePage')
+            }
     }
 
     return (
@@ -66,6 +66,7 @@ const Login = () => {
                 <FormGroup className='m-4'>
                     <FormLabel>Username</FormLabel>
                     <FormControl
+                        required
                         className='text-center' 
                         type='text'
                         id='username'
@@ -73,10 +74,11 @@ const Login = () => {
                         placeholder='Username'
                         onChange={(e) => updateForm({ username: e.target.value })}
                     />
-                </FormGroup >
+                    </FormGroup >
                 <FormGroup className='m-4'>
                     <FormLabel>Password</FormLabel>
                     <FormControl
+                        required
                         className='text-center' 
                         type='password'
                         id='password'
@@ -84,7 +86,7 @@ const Login = () => {
                         placeholder='Password'
                         onChange={(e) => updateForm({ password: e.target.value })}
                     />
-                </FormGroup>
+                    </FormGroup>
                 <FormGroup className='m-3'>
                     <Button 
                     type='submit' 

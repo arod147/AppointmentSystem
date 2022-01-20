@@ -46,6 +46,7 @@ const CreateSchedule = () => {
 
         updateList(currentList => [...currentList, employee])
         setForm({ date: Date, employee: '', })
+        handleClose();
     }
 
     function onDelete() {
@@ -81,42 +82,45 @@ const CreateSchedule = () => {
             <ModalBody>
                 <Form onSubmit={onSubmit}>
                     <FormGroup>
-                        <FormSelect 
+                        <FormSelect
+                        required
                         aria-label="Default select example"
                         value={form.employee}
                         onChange={(e) => updateForm({ date: value, employee: e.target.value})}
                         >
-                            <option>Choose employee</option>
+                            <option value=''>Choose employee</option>
                             <option value='Alex'>Alex</option>
                             <option value='Jack'>Jack</option>
                             <option value='Mark'>Mark</option>
                         </FormSelect>
                     </FormGroup>
                     <FormGroup>
-                        <FormSelect 
+                        <FormSelect
+                        required 
                         aria-label="Default select example"
                         value={form.startTime}
                         onChange={(e) => updateForm({ date: value, startTime: e.target.value})}
                         >
-                            <option>Choose Start time</option>
+                            <option value=''>Choose Start time</option>
                             <option value='8:00am'>8:00am</option>
                             <option value='9:00am'>9:00am</option>
                             <option value='10:00am'>10:00am</option>
                         </FormSelect>
                     </FormGroup>
                     <FormGroup>
-                        <FormSelect 
+                        <FormSelect
+                        required 
                         aria-label="Default select example"
                         value={form.endTime}
                         onChange={(e) => updateForm({ date: value, endTime: e.target.value})}
                         >
-                            <option>Choose End time</option>
+                            <option value=''>Choose End time</option>
                             <option value='8:00pm'>8:00pm</option>
                             <option value='9:00pm'>9:00pm</option>
                             <option value='10:00pm'>10:00pm</option>
                         </FormSelect>
                     </FormGroup>
-                    <Button className='mt-3' onClick={handleClose} type='submit' variant='primary'>Submit</Button>
+                    <Button className='mt-3' type='submit' variant='primary'>Submit</Button>
                 </Form>
             </ModalBody>
             <Button variant='secondary' onClick={handleClose}>Close</Button>
@@ -137,7 +141,7 @@ const CreateSchedule = () => {
                         value={form.employee}
                         onChange={(e) => updateForm({ date: value, employee: e.target.value})}
                         >
-                            <option>Choose employee</option>
+                            <option value=''>Choose employee</option>
                             <option value='Alex'>Alex</option>
                             <option value='Jack'>Jack</option>
                             <option value='Mark'>Mark</option>
@@ -149,7 +153,7 @@ const CreateSchedule = () => {
                         value={form.startTime}
                         onChange={(e) => updateForm({ date: value, startTime: e.target.value})}
                         >
-                            <option>Choose Start time</option>
+                            <option value=''>Choose Start time</option>
                             <option value='8:00am'>8:00am</option>
                             <option value='9:00am'>9:00am</option>
                             <option value='10:00am'>10:00am</option>
@@ -161,7 +165,7 @@ const CreateSchedule = () => {
                         value={form.endTime}
                         onChange={(e) => updateForm({ date: value, endTime: e.target.value})}
                         >
-                            <option>Choose End time</option>
+                            <option value=''>Choose End time</option>
                             <option value='8:00pm'>8:00pm</option>
                             <option value='9:00pm'>9:00pm</option>
                             <option value='10:00pm'>10:00pm</option>

@@ -2,10 +2,6 @@ import { Button, Form, FormControl, FormGroup, FormLabel, FormSelect, Row, Col, 
 import { useState } from 'react'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
-//First and last name
-//Service type
-//Date and time
-//Email address for comfirmation
 
     const AvailableEmployees = (props) => (
         <option value={props.name}>{props.name}</option>
