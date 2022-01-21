@@ -24,7 +24,7 @@ scheduleRoutes.route('/addSchedule').post((req, response) => {
 
 //Update schedule in database
 scheduleRoutes.route('/updateSchedule').post((req, response) => {
-    Schedule.findOneAndUpdate(req.body.month, {
+    Schedule.updateOne({month: req.body.month}, {
         scheduledDays: req.body.scheduledDays
     }, (err, res) => {
         if (err) throw err;
