@@ -29,10 +29,14 @@ const CreateSchedule = () => {
 
     const handleRemove = (index, date) => {
         const newList = [...list];
-        const filteredList = newList[index].days.filter(day => {
-            return day.date.getDate() !== date
-        });
-        updateList(filteredList)
+        const daysList = [...list[index].days]
+        if (daysList.length <= 1) {
+            const filteredList = newList.filter((emp, empIndex) => index !== empIndex)
+            return updateList(filteredList)
+        }
+        const newDaysList = daysList.filter(day => day.date.getDate() !== date)
+        newList[index].days = newDaysList
+        updateList(newList)
     }
 
     const handleUpdate = (index, innerIndex, todo) => {
@@ -45,7 +49,7 @@ const CreateSchedule = () => {
     const handleShowEdit = () => setShowEdit(true);
 
     const [form, setForm] = useState({
-        employee: '',
+        name: '',
         date: Date,
         startTime: 0,
         endTime: 0
@@ -58,88 +62,96 @@ const CreateSchedule = () => {
     }
 
     //Handles adding and editing our schedule
-    //Need to fix submit
-    //Bugs
-    // 3. onDelete needs to be able to remove a date from dats list
+
     async function onSubmit(e) {
         e.preventDefault();
-        const employee = { ...form}
+        const formInfo = { ...form}
         const newEmployee = {
-            employee: employee.employee,
+            name: formInfo.name,
                 days: [
                     {
-                        date: employee.date,
-                        startTime: employee.startTime,
-                        endTime: employee.endTime,
+                        date: formInfo.date,
+                        startTime: formInfo.startTime,
+                        endTime: formInfo.endTime,
                     }
                 ]
         }
 
         const findEmployee = list.find(emp => {
-            const day = emp.days.find(day => employee.date.getDate() === day.date.getDate())
+            const day = emp.days.find(day => formInfo.date.getDate() === day.date.getDate())
             return day !== undefined   
         })
         const employeeIndex = list.findIndex(emp => {
-            const day = emp.days.find(day => employee.date.getDate() === day.date.getDate())
+            const day = emp.days.find(day => formInfo.date.getDate() === day.date.getDate())
             return day !== undefined   
         })
 
-        const findEmployeeName = list.find(emp => emp.employee === employee.employee)
+        const findEmployeeName = list.find(emp => emp.name === formInfo.name)
 
         if (findEmployee !== undefined) {
             if (findEmployeeName !== undefined) {
-                const findDayIndex = findEmployee.days.findIndex(day => day.date.getDate() === employee.date.getDate());
-                if (employee.employee === findEmployee.employee) {
+                const findDayIndex = findEmployee.days.findIndex(day => day.date.getDate() === formInfo.date.getDate());
+                if (formInfo.name === findEmployee.employee) {
                     handleUpdate(employeeIndex, findDayIndex, newEmployee.days[0])
-                    setForm({ date: Date, employee: '', })
+                    setForm({ date: Date, name: '', })
                     return handleClose();
                 }
-                handleRemove(employeeIndex, employee.date.getDate())
+                handleRemove(employeeIndex, formInfo.date.getDate())
 
-                const employeeNameIndex = list.findIndex(emp => emp.employee === employee.employee)
+                const employeeNameIndex = list.findIndex(emp => emp.name === formInfo.name)
                 handleAdd(employeeNameIndex, newEmployee.days[0])
-                setForm({ date: Date, employee: '', })
+                setForm({ date: Date, name: '', })
                 return handleClose();
             }
-            handleRemove(employeeIndex, employee.date.getDate())
+            handleRemove(employeeIndex, formInfo.date.getDate())
             updateList(currentList => [...currentList, newEmployee])
-            setForm({ date: Date, employee: '', })
+            setForm({ date: Date, name: '', })
             return handleClose();    
         }
 
         if (findEmployeeName !== undefined) {
-            const employeeNameIndex = list.findIndex(emp => emp.employee === employee.employee)
+            const employeeNameIndex = list.findIndex(emp => emp.name === formInfo.name)
             handleAdd(employeeNameIndex, newEmployee.days[0])
-            setForm({ date: Date, employee: '', })
+            setForm({ date: Date, name: '', })
             return handleClose();
         }
 
         updateList(currentList => [...currentList, newEmployee])
-        setForm({ date: Date, employee: '', })
+        setForm({ date: Date, name: '', })
         handleClose();
     }
 
     function onDelete() {
-        const foundEmployee = list.find(item => item.employee === form.employee)
-        if(foundEmployee.days.length === 1) {
-            updateList(list.filter(item => item.employee !== form.employee))
-            setForm({ date: Date, employee: '', });
+        const formInfo = { ...form}
+        const findEmployee = list.find(emp => {
+            const day = emp.days.find(day => formInfo.date.getDate() === day.date.getDate())
+            return day !== undefined   
+        })
+        if (findEmployee !== undefined && findEmployee.name === formInfo.name) {
+            const employeeIndex = list.findIndex(emp => {
+                const day = emp.days.find(day => formInfo.date.getDate() === day.date.getDate())
+                return day !== undefined   
+            })
+            handleRemove(employeeIndex, formInfo.date.getDate())
             return handleClose()
         }
-        //const employeeIndex = list.findIndex(item => item.employee === form.employee)
-        //updateList(list[employeeIndex].days.fliter(day => day.date.getDate() !== form.date.getDate()));
-        //setForm({ date: Date, employee: '', });
-        //handleClose();
+        console.log('Please select a valid employee to delete')
     };
 
-    //Display first four letters of scheduled employee name
+    //Display first four letters of scheduled employee name and shift times
     function tileContent({date}) {
+        let foundDate
         const employee = list.find(item => {
-            const foundDate = item.days.find(day => day.date.getDate() === date.getDate())
+            foundDate = item.days.find(day => day.date.getDate() === date.getDate())
             return foundDate !== undefined
         })
         if (employee !== undefined) {
-            return <p className='mt-3'>{employee.employee.substr(0, 4)}</p>
+            return (
+                <div>
+                    <p className='mt-3'>{employee.name.substr(0, 4)}</p>
+                    <p className='mt-3'>{foundDate.startTime + ' ' + foundDate.endTime}</p>
+                </div>
+            )
         }
     }
     //Display add or edit for current date
@@ -152,7 +164,7 @@ const CreateSchedule = () => {
         if (employee === undefined) {
             return handleShowAdd()
         } else {
-            updateForm({employee: employee.employee, date: foundDate.date, startTime: foundDate.startTime, endTime: foundDate.endTime })
+            updateForm({name: employee.name, date: foundDate.date, startTime: foundDate.startTime, endTime: foundDate.endTime })
             return handleShowEdit()
         }
     }
@@ -169,8 +181,8 @@ const CreateSchedule = () => {
                         <FormSelect
                         required
                         aria-label="Default select example"
-                        value={form.employee}
-                        onChange={(e) => updateForm({ date: value, employee: e.target.value})}
+                        value={form.name}
+                        onChange={(e) => updateForm({ date: value, name: e.target.value})}
                         >
                             <option value=''>Choose employee</option>
                             <option value='Alex'>Alex</option>
@@ -222,8 +234,8 @@ const CreateSchedule = () => {
                     <FormGroup>
                         <FormSelect 
                         aria-label="Default select example"
-                        value={form.employee}
-                        onChange={(e) => updateForm({ date: value, employee: e.target.value})}
+                        value={form.name}
+                        onChange={(e) => updateForm({ date: value, name: e.target.value})}
                         >
                             <option value=''>Choose employee</option>
                             <option value='Alex'>Alex</option>
