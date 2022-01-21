@@ -11,6 +11,7 @@ import EmployeePage from "./companyComponents/employeePage";
 import Signup from "./companyComponents/signup";
 import Login from "./companyComponents/login";
 import CreateSchedule from "./companyComponents/createSchedule";
+import EditSchedule from "./companyComponents/editSchedule";
 
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
         <Route path='/login' element={<Login />}/>
         <Route path='/signup' element={<Signup />}/>
         <Route path='/createSchedule' element={<CreateSchedule />}/>
+        <Route path='/editSchedule' element={<EditSchedule />}/>
       </Routes>
       </div>
       <Footer />

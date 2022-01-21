@@ -1,19 +1,41 @@
 import { useEffect, useState } from 'react'
-import { Button, Form, FormGroup, FormLabel, FormSelect, Modal, ModalBody, ModalTitle } from 'react-bootstrap'
+import { Button, Dropdown, Form, FormGroup, FormLabel, FormSelect, Modal, ModalBody, ModalTitle } from 'react-bootstrap'
+import DropdownItem from 'react-bootstrap/esm/DropdownItem';
+import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
+import DropdownToggle from 'react-bootstrap/esm/DropdownToggle';
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router'
 
-const CreateSchedule = () => {
+const EditSchedule = () => {
     const navigate = useNavigate();
     const [value, onChange] = useState(new Date())
     const [showAdd, setShowAdd] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [list, updateList] = useState([])
+    const [schedules, setSchedules] = useState([])
+    useEffect(() => {
+       async function getSchedules() {
+           const response = await fetch(`http://localhost:5000/schedules`)
+
+           if (!response.ok) {
+            const message = `An error occured: ${response.statusText}`;
+            window.alert(message);
+            return;
+          }
+
+          const schedules = await response.json();
+          setSchedules(schedules);
+       }
+
+       getSchedules();
+       //console.log(schedules)
+       return;
+    }, [schedules.length])
 
     useEffect(() => {
-       console.log(list)
+        console.log(list)
     }, [list])
 
     const handleClose = () => {
@@ -21,6 +43,20 @@ const CreateSchedule = () => {
         setShowEdit(false)
     }
 
+    const handleConvert = (array) => {
+        const listCopy = [...array]
+        const convert = listCopy.map(item => {
+             const daysConvertedList = item.days.map(day => {
+                day.date = new Date(day.date)
+                return day
+            })
+
+            item.days = daysConvertedList
+            return item
+        })
+        console.log(convert)
+        updateList(convert)
+    }
     const handleAdd = (index, todo) => {
         const newList = [...list];
         newList[index].days.push(todo)
@@ -275,6 +311,22 @@ const CreateSchedule = () => {
         </Modal>
     )
 
+    const monthList = schedules.map(schedule => {
+        return <DropdownItem  key={schedule.month} onClick={() => handleConvert(schedule.scheduledDays)}>{schedule.month}</DropdownItem>
+    })
+
+    const scheduleList = (
+        <Dropdown>
+            <DropdownToggle variant='primary' id='dropdown-basic'>
+                Choose Month
+            </DropdownToggle>
+
+            <DropdownMenu>
+                {monthList}
+            </DropdownMenu>
+        </Dropdown>
+    )
+
     async function submitCalandar(e) {
         const monthList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
         e.preventDefault();
@@ -282,7 +334,7 @@ const CreateSchedule = () => {
             month: monthList[value.getMonth()],
             scheduledDays: list
         }
-        await fetch('http://localhost:5000/addSchedule', {
+        await fetch('http://localhost:5000/updateSchedule', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -295,13 +347,14 @@ const CreateSchedule = () => {
             return;
         });
 
-        navigate('/createSchedule');
+        navigate('/managerPage');
     }
 
     return (
         <div>
             {addModal}
             {editModal}
+            {scheduleList}
             <Form onSubmit={submitCalandar}>
                 <FormGroup className='mb-4'>
                     <FormLabel></FormLabel>
@@ -319,10 +372,10 @@ const CreateSchedule = () => {
                         onClickDay={(e) => modifyDate(e)}
                     />
                 </FormGroup>
-                <Button type='submit'>Create Schedule</Button>
+                <Button type='submit'>Save Schedule</Button>
             </Form>
         </div>
     )
 }
 
-export default CreateSchedule
+export default EditSchedule
