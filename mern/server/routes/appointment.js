@@ -1,0 +1,34 @@
+const express = require('express')
+
+const appointmentRoutes = express.Router();
+
+let Appointment = require('../models/appointment.modle');
+
+//This will get a list of all date in the appointment table
+appointmentRoutes.route('/appointments').get((req, res) => {
+    Appointment.find({}, (err, result) => {
+        if (err) throw err
+        res.json(result);
+    });
+});
+//Add a new Appointment to database
+appointmentRoutes.route('/addAppointment').post((req, response) => {
+    Appointment.create({
+        
+    }, (err, res) => {
+        if (err) throw err;
+        response.json(res)
+    })
+})
+
+//Update schedule in database
+appointmentRoutes.route('/updateAppointment').post((req, response) => {
+    Schedule.updateOne({month: req.body.month}, {
+        scheduledDays: req.body.scheduledDays
+    }, (err, res) => {
+        if (err) throw err;
+        response.json(res)
+    })
+})
+
+module.exports = appointmentRoutes;
