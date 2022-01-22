@@ -14,7 +14,13 @@ appointmentRoutes.route('/appointments').get((req, res) => {
 //Add a new Appointment to database
 appointmentRoutes.route('/addAppointment').post((req, response) => {
     Appointment.create({
-        
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        service: req.body.service,
+        date: req.body.date,
+        time: req.body.time,
+        employeeName: req.body.employeeName,
     }, (err, res) => {
         if (err) throw err;
         response.json(res)

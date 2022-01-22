@@ -1,5 +1,6 @@
 import { Button, Form, FormControl, FormGroup, FormLabel, FormSelect, Row, Col, ButtonGroup } from "react-bootstrap"
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
 
@@ -16,6 +17,7 @@ const CreateAppointment = () => {
     const [schedules, setSchedules] = useState([])
     const [appointments, setAppointments] = useState([])
     const [employeeList, setEmployeeList] = useState([])
+    const [unAvailableDays, setUnAvailableDays] = useState([])
     const [availableDays, setAvailableDays] = useState([])
     const [form, setForm] = useState({
         firstName: '',
@@ -26,6 +28,8 @@ const CreateAppointment = () => {
         time: 0,
         employeeName: ''
     })
+
+    const navigate = useNavigate();
 
     function updateForm(value) {
         return setForm(prev => {
@@ -87,57 +91,142 @@ const CreateAppointment = () => {
             const currentSchedule = schedules.find(schedule => schedule.month === month);
             if (currentSchedule !== undefined) {
                 const employee = currentSchedule.scheduledDays.find(employee => employee.name === form.employeeName);
-                const days = employee.days.map(day => new Date(day.date));
-                const daysInMonth = new Date(today.getFullYear(), today.getDate(), 0).getDate()
-                const daysInMonthList = []
-                for(let i = 1; i <= daysInMonth; i++ ) {
-                    daysInMonthList.push(i)
+
+                if (employee !== undefined) {
+                    const times = employee.days.map(day => {
+                        
+                        const convertToHour = (time) => {
+                            const hour = time.charAt(0);
+                            const dayOrNight = time.charAt(time.length - 2)
+                            const hourNumber = parseInt(hour);
+                            if (dayOrNight === 'a') {
+                                return hourNumber
+                            } else {
+                                return hourNumber + 12
+                            }
+                        }
+
+                        const start = convertToHour(day.startTime);
+                        const end = convertToHour(day.endTime);
+                        const timesList = []
+
+                        for(let i = start; i < end; i++) {
+                            let current = i;
+                            if(current <= 12 ) {
+                                timesList.push(current.toString() + ':00am')
+                            } else {
+                               current = current - 12
+                               timesList.push(current.toString() + ':00pm')
+                            }
+                        }
+
+                        return {
+                            date: new Date(day.date),
+                            times: timesList
+                        }
+                    })
+
+                    const filterDays = times.map(day => {
+
+                        const availableTimes = day.times.filter(time => {
+                            const foundApp = appointments.find(app => {
+                                const date = new Date(app.date)
+                                return app.time === time && date.getDate() === day.date.getDate()
+                            });
+                            return foundApp === undefined;
+                        })
+                        day.times = availableTimes;
+                        return day
+                    })
+                    console.log(filterDays)
+                    setAvailableDays(filterDays);
+                } else {
+                    setAvailableDays([])
                 }
-                const unAvailableDays = daysInMonthList.filter(day => {
-                    const found = days.find(date => date.getDate() === day);
-                    return found === undefined
-                })
-                console.log(unAvailableDays)
-                setAvailableDays(unAvailableDays);
             }
         }
 
-        getAvailableDays();
+        function getUnAvailableDays() {
+            const today = new Date();
+            const monthList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+            const month = monthList[today.getMonth()];
+            const currentSchedule = schedules.find(schedule => schedule.month === month);
+            if (currentSchedule !== undefined) {
+                const employee = currentSchedule.scheduledDays.find(employee => employee.name === form.employeeName);
 
-        console.log(availableDays)
-    }, [form])
-
-    const [employeeInfo, updateEmployeeInfo] = useState(
-        {
-            firstName: 'Alex',
-            availableDays: [
-                {
-                    date: value,
-                    times: ['1:00pm', '2:00pm', '3:00pm']
+                if (employee !== undefined) {
+                    const days = employee.days.map(day => new Date(day.date));
+                    const daysInMonth = new Date(today.getFullYear(), today.getDate(), 0).getDate()
+                    const daysInMonthList = []
+                    for(let i = 1; i <= daysInMonth; i++ ) {
+                        daysInMonthList.push(i)
+                    }
+                    const unAvailableDays = daysInMonthList.filter(day => {
+                        const found = days.find(date => date.getDate() === day);
+                        return found === undefined
+                    })
+                    setUnAvailableDays(unAvailableDays);
+                } else {
+                    setUnAvailableDays([])
                 }
-            ]
+            }
         }
-    )
+        getUnAvailableDays();
+        getAvailableDays();
+    }, [form.employeeName, form.date])
 
-
+    useEffect(() => {
+        console.log(form)
+    }, [form])
 
     const emps = employeeList.map((emp, index) => {
         return <AvailableEmployees key={index} name={emp}/>
     })
     //Show availbale days 
     function disableTiles({date}) {
-        return availableDays.find(day => day === date.getDate())
+        return unAvailableDays.find(day => day === date.getDate())
     }
 
-    const times = employeeInfo.availableDays.map(day => {
-        return day.times.map((time, index) => {
-            return <AvailableTimes key={index} func={() => updateForm({ time: time})} time={time}/>
-        }) 
+    const times = availableDays.map(day => {
+        if(day.date.getDate() === value.getDate()) {
+            return day.times.map((time, index) => {
+                return <AvailableTimes key={index} func={() => updateForm({ time: time})} time={time}/>
+            }) 
+        }
     })
+
+    async function onSubmit(e) {
+        e.preventDefault();
+
+        const newAppointment = { ...form }
+
+        await fetch('http://localhost:5000/addAppointment', {
+            method: 'POST',
+            headers: {
+                'Content-type' : 'application/json',
+            },
+            body: JSON.stringify(newAppointment)
+        })
+        .catch(error => {
+            window.alert(error);
+            navigate('/createAppointment')
+        })
+
+        setForm({
+            firstName: '',
+            lastName: '',
+            email: '',
+            service: '',
+            time: '',
+            date: Date,
+            employeeName: '',
+        })
+        navigate('/')
+    }
 
     return (
         <div>
-            <Form>
+            <Form onSubmit={onSubmit}>
             <FormGroup className="mb-4">
                     <FormLabel>Services</FormLabel>
                     <FormSelect 
@@ -173,8 +262,10 @@ const CreateAppointment = () => {
                             prev2Label={null}
                             tileDisabled={disableTiles}
                             showNeighboringMonth={false}
-                            onChange={onChange}
-                            onClickDay={() => updateForm({ date: value})}
+                            onChange={(value) => {
+                                onChange(value);
+                                updateForm({date: value});
+                            }}
                             value={value}
                         />
                     </FormGroup>
