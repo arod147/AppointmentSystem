@@ -15,6 +15,8 @@ const CreateAppointment = () => {
     const [value, onChange] = useState(new Date())
     const [schedules, setSchedules] = useState([])
     const [appointments, setAppointments] = useState([])
+    const [employeeList, setEmployeeList] = useState([])
+    const [availableDays, setAvailableDays] = useState([])
     const [form, setForm] = useState({
         firstName: '',
         lastName: '',
@@ -57,17 +59,54 @@ const CreateAppointment = () => {
            setAppointments(appointments);
         }
        
+        function getEmployees() {
+            const today = new Date();
+            const monthList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+            const month = monthList[today.getMonth()];
+            const currentSchedule = schedules.find(schedule => schedule.month === month);
+            const employeeList = currentSchedule.scheduledDays.map(employee => employee.name);
+
+            setEmployeeList(employeeList);
+        }
+
        getSchedules();
        getAppointments();
-       console.log(schedules)
-       console.log(appointments)
+       if (schedules.length >= 1) {
+           getEmployees()
+       }
+       //console.log(schedules)
+       //console.log(appointments)
     }, [schedules.length, appointments.length])
 
     useEffect(() => {
-        console.log(form)
+
+        function getAvailableDays() {
+            const today = new Date();
+            const monthList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+            const month = monthList[today.getMonth()];
+            const currentSchedule = schedules.find(schedule => schedule.month === month);
+            if (currentSchedule !== undefined) {
+                const employee = currentSchedule.scheduledDays.find(employee => employee.name === form.employeeName);
+                const days = employee.days.map(day => new Date(day.date));
+                const daysInMonth = new Date(today.getFullYear(), today.getDate(), 0).getDate()
+                const daysInMonthList = []
+                for(let i = 1; i <= daysInMonth; i++ ) {
+                    daysInMonthList.push(i)
+                }
+                const unAvailableDays = daysInMonthList.filter(day => {
+                    const found = days.find(date => date.getDate() === day);
+                    return found === undefined
+                })
+                console.log(unAvailableDays)
+                setAvailableDays(unAvailableDays);
+            }
+        }
+
+        getAvailableDays();
+
+        console.log(availableDays)
     }, [form])
 
-    const employeeList = ['Alex', 'Mark']
     const [employeeInfo, updateEmployeeInfo] = useState(
         {
             firstName: 'Alex',
@@ -87,7 +126,7 @@ const CreateAppointment = () => {
     })
     //Show availbale days 
     function disableTiles({date}) {
-        return employeeInfo.availableDays.find(day => day.date.getDate() !== date.getDate())
+        return availableDays.find(day => day === date.getDate())
     }
 
     const times = employeeInfo.availableDays.map(day => {
@@ -135,7 +174,7 @@ const CreateAppointment = () => {
                             tileDisabled={disableTiles}
                             showNeighboringMonth={false}
                             onChange={onChange}
-                            onChange={() => updateForm({ date: value})}
+                            onClickDay={() => updateForm({ date: value})}
                             value={value}
                         />
                     </FormGroup>
