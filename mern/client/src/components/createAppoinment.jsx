@@ -184,7 +184,11 @@ const CreateAppointment = () => {
     })
     //Show availbale days 
     function disableTiles({date}) {
-        return unAvailableDays.find(day => day === date.getDate())
+        if(unAvailableDays.length >= 1){
+            return unAvailableDays.find(day => day === date.getDate())
+        } else {
+            return date.getDay() !== 7
+        }
     }
 
     const times = availableDays.map(day => {
@@ -199,7 +203,11 @@ const CreateAppointment = () => {
         e.preventDefault();
 
         const newAppointment = { ...form }
-
+        if(newAppointment.date === Date || newAppointment.time === 0) {
+            window.alert('Please select a date and time')
+            return;
+        }
+        
         await fetch('http://localhost:5000/addAppointment', {
             method: 'POST',
             headers: {
@@ -235,7 +243,7 @@ const CreateAppointment = () => {
                         value={form.service}
                         onChange={(e) => updateForm({ service: e.target.value })}
                     >
-                        <option>Please Choose A Service</option>
+                        <option value="">Please Choose A Service</option>
                         <option value="Service 1">Service 1</option>
                     </FormSelect>
                 </FormGroup>
@@ -247,7 +255,7 @@ const CreateAppointment = () => {
                         value={form.employeeName}
                         onChange={(e) => updateForm({ employeeName: e.target.value })}
                     >
-                        <option>Choose Staff employee</option>
+                        <option value="">Choose Staff employee</option>
                         {emps}
                     </FormSelect>
                 </FormGroup>
