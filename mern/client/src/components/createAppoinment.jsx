@@ -2,6 +2,7 @@ import { Button, Form, FormControl, FormGroup, FormLabel, FormSelect, Row, Col, 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import Calendar from 'react-calendar'
+import emailjs from 'emailjs-com';
 import 'react-calendar/dist/Calendar.css';
 
     const AvailableEmployees = (props) => (
@@ -30,6 +31,23 @@ const CreateAppointment = () => {
     })
 
     const navigate = useNavigate();
+
+    function sendEmail() {
+        
+        const formInfo = {
+            from_name: 'Company Name',
+            to_email: form.email,
+            to_name: form.firstName,
+            message: "Thank you for you scheduling your appointment. We have you scheduled for " + form.time + " on " + form.date.toDateString() + " we look forward to seeing you!" 
+        }
+        emailjs.send('service_wvziodk', 'contact_form', formInfo, 'user_zVys5JwD6d74Vagb6olmm')
+          .then((result) => {
+              //window.location.reload()  //This is if you still want the page to reload (since e.preventDefault() cancelled that behavior) 
+                console.log(result)
+            }, (error) => {
+              console.log(error.text);
+          });
+      }
 
     function updateForm(value) {
         return setForm(prev => {
@@ -175,9 +193,9 @@ const CreateAppointment = () => {
         getAvailableDays();
     }, [form.employeeName, form.date])
 
-    useEffect(() => {
-        console.log(form)
-    }, [form])
+    // useEffect(() => {
+    //     console.log(form)
+    // }, [form])
 
     const emps = employeeList.map((emp, index) => {
         return <AvailableEmployees key={index} name={emp}/>
@@ -197,6 +215,7 @@ const CreateAppointment = () => {
                 return <AvailableTimes key={index} func={() => updateForm({ time: time})} time={time}/>
             }) 
         }
+        return true;
     })
 
     async function onSubmit(e) {
@@ -220,6 +239,8 @@ const CreateAppointment = () => {
             navigate('/createAppointment')
         })
 
+        sendEmail()
+
         setForm({
             firstName: '',
             lastName: '',
@@ -229,7 +250,7 @@ const CreateAppointment = () => {
             date: Date,
             employeeName: '',
         })
-        navigate('/')
+        navigate('/confirmationPage')
     }
 
     return (

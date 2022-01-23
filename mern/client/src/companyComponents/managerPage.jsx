@@ -101,10 +101,6 @@ const ManagerPage = () => {
         return;
     }, [appointments.length])
 
-    useEffect(() => {
-        console.log(showConfirm)
-    }, [showConfirm])
-
 const appointmentList = appointments.map((app, index) => {
     return <Appointment func={openModal} appointment={app} key={index}/>
 })
@@ -177,8 +173,8 @@ const editlModal = (
             {cancelModal}
             {editlModal}
             <h3>Hello manager</h3>
-            <Button href='/createSchedule'>Create Schedule</Button>
-            <Button href='/editSchedule'>Edit Schedule</Button>
+            <Button className='m-1' href='/createSchedule'>Create Schedule</Button>
+            <Button className='m-1' href='/editSchedule'>Edit Schedule</Button>
             <br />
             <h2>Appointments</h2>
             <Table striped bordered hover variant="dark" className="mt-4">
