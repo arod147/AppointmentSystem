@@ -33,16 +33,17 @@ const CreateAppointment = () => {
     const navigate = useNavigate();
 
     function sendEmail() {
-        
         const formInfo = {
             from_name: 'Company Name',
             to_email: form.email,
             to_name: form.firstName,
-            message: "Thank you for you scheduling your appointment. We have you scheduled for " + form.time + " on " + form.date.toDateString() + " we look forward to seeing you!" 
+            message: 
+            "Thank you for you scheduling your appointment. We have you scheduled for " + 
+            form.time + " on " + form.date.toDateString() + " we look forward to seeing you! " + 
+            "if you need to cancel or reschedule your appointment please give us a call at PHONE NUMBER." 
         }
         emailjs.send('service_wvziodk', 'contact_form', formInfo, 'user_zVys5JwD6d74Vagb6olmm')
-          .then((result) => {
-              //window.location.reload()  //This is if you still want the page to reload (since e.preventDefault() cancelled that behavior) 
+          .then((result) => { 
                 console.log(result)
             }, (error) => {
               console.log(error.text);
