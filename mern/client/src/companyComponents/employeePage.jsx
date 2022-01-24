@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import ModalHeader from 'react-bootstrap/esm/ModalHeader'
 import { useNavigate } from 'react-router'
 import CompanyHeader from './companyHeader'
+import { useAppSelector } from '../app/hooks'
+import { selectFirstName } from '../app/userSlice'
 
 //Creates a compenents for an appointment
 const Appointment = (props) => (
@@ -33,7 +35,7 @@ const EmployeePage = () => {
     const [showCancel, setShowCancel] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [selectedAppointment, setSelectedAppointment] = useState({})
-
+    const firstName = useAppSelector(selectFirstName)
     const navigate = useNavigate();
     
     const handleClose = () => {
@@ -81,7 +83,7 @@ const EmployeePage = () => {
         setAppointments(newAppointmentList)
         setSelectedAppointment({})
         handleClose();
-        navigate('/managerPage')
+        navigate('/employeePage')
     }
 
     //Request a list of appointments from our database to display our appointments
@@ -100,9 +102,9 @@ const EmployeePage = () => {
                   app.date = new Date(app.date).toDateString();
                   return app
               })
-
+              //console.log(localStorage)
               const filteredAppointments = convertDates.filter(app => {
-                  return app.employeeName === 'Alex'
+                  return app.employeeName === firstName
               })
 
               setAppointments(filteredAppointments);

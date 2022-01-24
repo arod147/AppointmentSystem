@@ -39,6 +39,8 @@ userRoutes.route('/user/:username').get((req, res) => {
 // This section will help you create a new user.
 userRoutes.route('/user/add').post((req, response) => {
     User.create({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         username: req.body.userName,
         password: req.body.passWord,
         email: req.body.email,

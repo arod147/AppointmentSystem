@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Form, FormGroup, FormLabel, FormSelect, Modal, ModalBody, ModalTitle } from 'react-bootstrap'
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import Calendar from 'react-calendar'
@@ -12,11 +12,31 @@ const CreateSchedule = () => {
     const [showAdd, setShowAdd] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [list, updateList] = useState([])
+    const [employees, setEmployees] = useState([])
     const navigate = useNavigate();
 
-    //useEffect(() => {
-    //   console.log(list)
-    //}, [list])
+    useEffect(() => {
+       async function getEmployees() {
+
+        const response = await fetch('http://localhost:5000/user')
+        
+        if (!response.ok) {
+            const message = `An error occured: ${response.statusText}`;
+            window.alert(message);
+            return;
+          }
+
+          const userList = await response.json();
+          console.log(userList)
+          const filteredUsersList = userList.filter(user => user.position === 'employee');
+          const userFirstNameList = filteredUsersList.map(user => user.firstName);
+        console.log(userFirstNameList)
+
+          setEmployees(userFirstNameList)
+        }
+        getEmployees();
+        return;
+    }, [employees.length])
 
     const handleClose = () => {
         setShowAdd(false)
@@ -170,6 +190,10 @@ const CreateSchedule = () => {
         }
     }
 
+    const employeeSelectList = employees.map((emp, index) => {
+        return <option key={index} value={emp}>{emp}</option>
+    })
+
     //Add to current date
     const addModal = (
         <Modal show={showAdd} onHide={handleClose}>
@@ -186,9 +210,7 @@ const CreateSchedule = () => {
                         onChange={(e) => updateForm({ date: value, name: e.target.value})}
                         >
                             <option value=''>Choose employee</option>
-                            <option value='Alex'>Alex</option>
-                            <option value='Jack'>Jack</option>
-                            <option value='Mark'>Mark</option>
+                            {employeeSelectList}
                         </FormSelect>
                     </FormGroup>
                     <FormGroup>
@@ -293,11 +315,11 @@ const CreateSchedule = () => {
         })
         .catch(error => {
             window.alert('Error inserting or duplicate month');
-            navigate('/managerPage');
+            navigate('/createSchedule');
             return;
         });
 
-        navigate('/createSchedule');
+        navigate('/managerPage');
     }
 
     return (

@@ -1,7 +1,11 @@
+import { useEffect } from 'react';
 import { Button, Stack } from 'react-bootstrap';
 import CompanyHeader from './companyHeader'
 
 const CompanyHub = () => {
+    useEffect(() => {
+        localStorage.clear()
+    }, [])
     return (
         <div>
             <CompanyHeader />

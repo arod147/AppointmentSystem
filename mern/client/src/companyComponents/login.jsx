@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Button, Form, FormControl, FormGroup, FormLabel, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../app/hooks';
-import { setUserName } from '../app/userSlice';
+import { setFirstName, setPosition, setUserName } from '../app/userSlice';
 import CompanyHeader from './companyHeader';
 
 
@@ -55,8 +55,10 @@ const Login = () => {
                 setLoading({ status: false, hide: true })
                 return;
             }
-    
+            console.log(user)
             dispatch(setUserName(loginInfo.username))
+            dispatch(setFirstName(user.firstName))
+            dispatch(setPosition(user.position))
             setForm({ username: '', password: '' })
             setLoading({ status: false, hide: true })
             if (user.position === 'manager') {

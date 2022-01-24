@@ -11,22 +11,22 @@ import {
   import "bootstrap/dist/css/bootstrap.css";
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '../app/hooks';
-import { selectUserName } from '../app/userSlice';
+import { selectFirstName, selectPosition } from '../app/userSlice';
   
   // Here, we display our Navbar
   export default function CompanyHeader() {
-    const user = useAppSelector(selectUserName);
+    const user = useAppSelector(selectFirstName);
+    const position = useAppSelector(selectPosition)
     const [link, setLink] = useState('/login');
 
     useEffect(() => {
-        if(user === 'employee') {
+        if(position === 'employee') {
             setLink('/employeePage')
         }
-        if(user === 'manager') {
+        if(position === 'manager') {
             setLink('/managerPage')
         }
-        console.log(user)
-    }, [user])
+    }, [position])
 
     function clearLocalStorage() {
         localStorage.clear();

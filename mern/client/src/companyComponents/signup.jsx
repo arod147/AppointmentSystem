@@ -5,6 +5,8 @@ import CompanyHeader from './companyHeader';
 
 const Signup = () => {
     const [form, setForm] = useState({
+        firstName: '',
+        lastName: '',
         userName: '',
         passWord: '',
         email: '',
@@ -40,7 +42,7 @@ const Signup = () => {
             return;
         });
 
-        setForm({ userName: '', passWord: '', email: '', position: '', })
+        setForm({ firstName: '', lastName: '', userName: '', passWord: '', email: '', position: '', })
         navigate('/login');
     }
 
@@ -49,8 +51,32 @@ const Signup = () => {
         <CompanyHeader />
             <h3>Create new user</h3>
             <Form onSubmit={onSubmit} className='m-5 border border-5 border-dark rounded'>
+            <FormGroup className='m-4'>
+                    <FormLabel>First name</FormLabel>
+                    <FormControl
+                        required
+                        className='text-center'
+                        type='text'
+                        id='firstName'
+                        value={form.firstName}
+                        placeholder='First Name'
+                        onChange={(e) => updateForm({ firstName: e.target.value})}
+                    />
+                </FormGroup>
                 <FormGroup className='m-4'>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Last name</FormLabel>
+                    <FormControl
+                        required
+                        className='text-center'
+                        type='text'
+                        id='lastName'
+                        value={form.lastName}
+                        placeholder='Last Name'
+                        onChange={(e) => updateForm({ lastName: e.target.value})}
+                    />
+                </FormGroup>
+                <FormGroup className='m-4'>
+                    <FormLabel>User name</FormLabel>
                     <FormControl
                         required
                         className='text-center'
