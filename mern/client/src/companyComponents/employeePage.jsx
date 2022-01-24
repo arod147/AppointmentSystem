@@ -2,6 +2,7 @@ import { Button, Modal, Table,  ModalTitle, ModalBody, Col } from 'react-bootstr
 import { useEffect, useState } from 'react'
 import ModalHeader from 'react-bootstrap/esm/ModalHeader'
 import { useNavigate } from 'react-router'
+import CompanyHeader from './companyHeader'
 
 //Creates a compenents for an appointment
 const Appointment = (props) => (
@@ -179,6 +180,7 @@ const editlModal = (
 
     return (
         <div>
+            <CompanyHeader />
             {confirmModal}
             {cancelModal}
             {editlModal}

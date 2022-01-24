@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router'
 import Calendar from 'react-calendar'
 import emailjs from 'emailjs-com';
 import 'react-calendar/dist/Calendar.css';
+import Header from "./header";
 
     //Creates an select option for an employee
     const AvailableEmployees = (props) => (
@@ -267,6 +268,7 @@ const CreateAppointment = () => {
 
     return (
         <div>
+            <Header />
             <Form onSubmit={onSubmit}>
             <FormGroup className="mb-4">
                     <FormLabel>Services</FormLabel>

@@ -1,11 +1,8 @@
 import { 
   Container, 
   Navbar, 
-  NavbarBrand, 
-  Nav,
-  NavLink } from 'react-bootstrap';
+  NavbarBrand,  } from 'react-bootstrap';
 import NavbarToggle from 'react-bootstrap/esm/NavbarToggle';
-import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
 
 // We import bootstrap to make our application look better.
 import "bootstrap/dist/css/bootstrap.css";
@@ -18,11 +15,6 @@ export default function Header() {
         <Container>
           <NavbarBrand href='/'>Home</NavbarBrand>
           <NavbarToggle aria-controls='basic-navbar-nav'/>
-          <NavbarCollapse className='justify-content-end' id='basic-navbar-nav'>
-            <Nav>
-              <NavLink className='mx-3' href='/login'>Login</NavLink>
-            </Nav>
-          </NavbarCollapse>
         </Container>
       </Navbar>
     </div>

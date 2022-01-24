@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button, Form, FormControl, FormGroup, FormLabel, FormText, FormSelect } from 'react-bootstrap';
 import { useNavigate } from 'react-router'
+import CompanyHeader from './companyHeader';
 
 const Signup = () => {
     const [form, setForm] = useState({
@@ -45,6 +46,7 @@ const Signup = () => {
 
     return (
         <div className='text-center'>
+        <CompanyHeader />
             <h3>Create new user</h3>
             <Form onSubmit={onSubmit} className='m-5 border border-5 border-dark rounded'>
                 <FormGroup className='m-4'>

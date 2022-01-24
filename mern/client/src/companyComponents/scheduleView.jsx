@@ -3,7 +3,7 @@ import { Dropdown } from 'react-bootstrap'
 import DropdownItem from 'react-bootstrap/esm/DropdownItem';
 import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
 import DropdownToggle from 'react-bootstrap/esm/DropdownToggle';
-
+import CompanyHeader from './companyHeader'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
 
@@ -88,6 +88,7 @@ const ScheduleView = () => {
 
     return (
         <div>
+            <CompanyHeader />
             {scheduleList}
             <Calendar
                 minDetail="month"

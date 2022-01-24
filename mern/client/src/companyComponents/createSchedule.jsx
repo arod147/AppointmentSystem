@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Form, FormGroup, FormLabel, FormSelect, Modal, ModalBody, ModalTitle } from 'react-bootstrap'
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router'
+import CompanyHeader from './companyHeader';
+
 
 const CreateSchedule = () => {
     const [value, onChange] = useState(new Date())
@@ -300,6 +302,7 @@ const CreateSchedule = () => {
 
     return (
         <div>
+            <CompanyHeader />
             {addModal}
             {editModal}
             <Form onSubmit={submitCalandar}>

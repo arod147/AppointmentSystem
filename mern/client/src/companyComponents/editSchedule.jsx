@@ -7,7 +7,7 @@ import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router'
-
+import CompanyHeader from './companyHeader'
 const EditSchedule = () => {
     const [value, onChange] = useState(new Date())
     const [showAdd, setShowAdd] = useState(false);
@@ -356,6 +356,7 @@ const EditSchedule = () => {
 
     return (
         <div>
+            <CompanyHeader />
             {addModal}
             {editModal}
             {scheduleList}

@@ -3,6 +3,8 @@ import { Button, Form, FormControl, FormGroup, FormLabel, Spinner } from 'react-
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../app/hooks';
 import { setUserName } from '../app/userSlice';
+import CompanyHeader from './companyHeader';
+
 
 const Login = () => {
     //Clear local storage we store the username on in the users local storage.
@@ -66,6 +68,7 @@ const Login = () => {
 
     return (
         <div className='text-center'>
+            <CompanyHeader />
             <h3>Login</h3>
             <Form onSubmit={onSubmit} className='m-5 border border-5 border-dark rounded'>
                 <FormGroup className='m-4'>

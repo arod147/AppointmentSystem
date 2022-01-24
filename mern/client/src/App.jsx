@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 
 // We import all the components we need in our app
 import Homepage from "./components/homepage";
-import Header from "./components/header";
 import Footer from "./components/footer";
 import CreateAppointment from "./components/createAppoinment";
 import ManagerPage from "./companyComponents/managerPage";
@@ -14,13 +13,12 @@ import CreateSchedule from "./companyComponents/createSchedule";
 import EditSchedule from "./companyComponents/editSchedule";
 import ConfirmationPage from "./components/confirmationPage";
 import ScheduleView from "./companyComponents/scheduleView";
-
+import CompanyHub from "./companyComponents/companyHub";
 
 const App = () => {
   return (
     <div>
-      <Header />
-      <div style={{ margin: 20 }}>
+      <div>
       <Routes>
         <Route path='/' element={<Homepage />}/>
         <Route path='/createAppoinment' element={<CreateAppointment />}/>
@@ -30,8 +28,9 @@ const App = () => {
         <Route path='/signup' element={<Signup />}/>
         <Route path='/createSchedule' element={<CreateSchedule />}/>
         <Route path='/editSchedule' element={<EditSchedule />}/>
-        <Route path='/confirmationPage' element={<ConfirmationPage/>}/>
-        <Route path='/scheduleView' element={<ScheduleView/>}/>
+        <Route path='/confirmationPage' element={<ConfirmationPage />}/>
+        <Route path='/scheduleView' element={<ScheduleView />}/>
+        <Route path='/companyHub' element={<CompanyHub />}/>
       </Routes>
       </div>
       <Footer />
