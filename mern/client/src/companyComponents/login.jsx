@@ -5,25 +5,30 @@ import { useAppDispatch } from '../app/hooks';
 import { setUserName } from '../app/userSlice';
 
 const Login = () => {
+    //Clear local storage we store the username on in the users local storage.
     useEffect(() => {
         localStorage.clear();
     }, [])
+
     const  dispatch = useAppDispatch()
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         username: '',
         password: '',
     });
+
     const [loading, setLoading] = useState({
         status: false,
         hide: true,
     })
-    const navigate = useNavigate();
+
+
     function updateForm(value) {
         return setForm(prev => {
             return { ...prev, ...value };
         });
     }
-    
+    //Verify form information and log them in.
     async function onSubmit(e) {
             setLoading({ status: true, hide: false })
             e.preventDefault();

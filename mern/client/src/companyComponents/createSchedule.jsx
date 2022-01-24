@@ -6,15 +6,15 @@ import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router'
 
 const CreateSchedule = () => {
-    const navigate = useNavigate();
     const [value, onChange] = useState(new Date())
     const [showAdd, setShowAdd] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [list, updateList] = useState([])
+    const navigate = useNavigate();
 
-    useEffect(() => {
-       console.log(list)
-    }, [list])
+    //useEffect(() => {
+    //   console.log(list)
+    //}, [list])
 
     const handleClose = () => {
         setShowAdd(false)
@@ -62,7 +62,6 @@ const CreateSchedule = () => {
     }
 
     //Handles adding and editing our schedule
-
     async function onSubmit(e) {
         e.preventDefault();
         const formInfo = { ...form}
@@ -154,7 +153,7 @@ const CreateSchedule = () => {
             )
         }
     }
-    //Display add or edit for current date
+    //Display add or edit modal for current date
     function modifyDate(date) {
         let foundDate;
         const employee = list.find(item => {
@@ -275,6 +274,7 @@ const CreateSchedule = () => {
         </Modal>
     )
 
+    //Handles submiting our new calandar to our database
     async function submitCalandar(e) {
         const monthList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
         e.preventDefault();

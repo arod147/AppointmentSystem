@@ -2,6 +2,8 @@ import { Button, Modal, Table,  ModalTitle, ModalBody, Col } from 'react-bootstr
 import { useEffect, useState } from 'react'
 import ModalHeader from 'react-bootstrap/esm/ModalHeader'
 import { useNavigate } from 'react-router'
+
+//Creates a compenents for an appointment
 const Appointment = (props) => (
     <tr>
         <td>{props.appointment.firstName} {props.appointment.lastName}</td>
@@ -32,6 +34,7 @@ const ManagerPage = () => {
     const [selectedAppointment, setSelectedAppointment] = useState({})
 
     const navigate = useNavigate();
+    
     const handleClose = () => {
         setShowConfirm(false)
         setShowCancel(false)
@@ -58,6 +61,7 @@ const ManagerPage = () => {
         }
     }
 
+    //This will send a requset to our server to delete an appointment from our database.
     async function onDelete() {
         const appointment = {...selectedAppointment}
         await fetch('http://localhost:5000/deleteAppointment', {
@@ -79,6 +83,7 @@ const ManagerPage = () => {
         navigate('/managerPage')
     }
 
+    //Request a list of appointments from our database to display our appointments
     useEffect(() => {
         const getAppointments = async() => {
             const response = await fetch('http://localhost:5000/appointments') 

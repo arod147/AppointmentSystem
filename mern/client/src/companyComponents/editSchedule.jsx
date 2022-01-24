@@ -9,12 +9,13 @@ import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router'
 
 const EditSchedule = () => {
-    const navigate = useNavigate();
     const [value, onChange] = useState(new Date())
     const [showAdd, setShowAdd] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [list, updateList] = useState([])
     const [schedules, setSchedules] = useState([])
+    const navigate = useNavigate();
+    //Gather all our schedules
     useEffect(() => {
        async function getSchedules() {
            const response = await fetch(`http://localhost:5000/schedules`)
@@ -34,15 +35,17 @@ const EditSchedule = () => {
        return;
     }, [schedules.length])
 
-    useEffect(() => {
-        console.log(list)
-    }, [list])
+    //useEffect(() => {
+    //    console.log(list)
+    //}, [list])
 
     const handleClose = () => {
         setShowAdd(false)
         setShowEdit(false)
     }
 
+    //Dates get stored in our database as a JSON date type we use this to convert them back
+    //to a javascript date type
     const handleConvert = (array) => {
         const listCopy = [...array]
         const convert = listCopy.map(item => {
@@ -54,9 +57,10 @@ const EditSchedule = () => {
             item.days = daysConvertedList
             return item
         })
-        console.log(convert)
+        //console.log(convert)
         updateList(convert)
     }
+
     const handleAdd = (index, todo) => {
         const newList = [...list];
         newList[index].days.push(todo)
@@ -98,7 +102,6 @@ const EditSchedule = () => {
     }
 
     //Handles adding and editing our schedule
-
     async function onSubmit(e) {
         e.preventDefault();
         const formInfo = { ...form}
@@ -190,7 +193,7 @@ const EditSchedule = () => {
             )
         }
     }
-    //Display add or edit for current date
+    //Display add or edit modal for current date
     function modifyDate(date) {
         let foundDate;
         const employee = list.find(item => {
@@ -326,7 +329,8 @@ const EditSchedule = () => {
             </DropdownMenu>
         </Dropdown>
     )
-
+    
+    //This will send a request to our server to update a calandar in our database
     async function submitCalandar(e) {
         const monthList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
         e.preventDefault();

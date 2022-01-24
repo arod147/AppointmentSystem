@@ -5,15 +5,17 @@ import Calendar from 'react-calendar'
 import emailjs from 'emailjs-com';
 import 'react-calendar/dist/Calendar.css';
 
+    //Creates an select option for an employee
     const AvailableEmployees = (props) => (
         <option value={props.name}>{props.name}</option>
     )
-
+    //Creates a button for an available time
     const AvailableTimes = (props) => (
         <Button onClick={props.func} value={props.time} className="m-1" variant="primary">{props.time}</Button>
     )
 
 const CreateAppointment = () => {
+    //State that will be managed on the page
     const [value, onChange] = useState(new Date())
     const [schedules, setSchedules] = useState([])
     const [appointments, setAppointments] = useState([])
@@ -29,7 +31,7 @@ const CreateAppointment = () => {
         time: 0,
         employeeName: ''
     })
-
+    //Used for navigation to another page.
     const navigate = useNavigate();
 
     function sendEmail() {
@@ -56,6 +58,8 @@ const CreateAppointment = () => {
         });
     }
 
+    //This effect will gather all schedules and 
+    //Currently scheduled appointments in data base
     useEffect(() => {
         async function getSchedules() {
             const response = await fetch(`http://localhost:5000/schedules`)
@@ -97,12 +101,10 @@ const CreateAppointment = () => {
        if (schedules.length >= 1) {
            getEmployees()
        }
-       //console.log(schedules)
-       //console.log(appointments)
     }, [schedules.length, appointments.length])
 
+    //This effect will update our slected employees available days and times
     useEffect(() => {
-
         function getAvailableDays() {
             const today = new Date();
             const monthList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -113,7 +115,8 @@ const CreateAppointment = () => {
 
                 if (employee !== undefined) {
                     const times = employee.days.map(day => {
-                        
+                        //Used to convert our employees shift start and end time to 
+                        //Milatary time
                         const convertToHour = (time) => {
                             const hour = time.charAt(0);
                             const dayOrNight = time.charAt(time.length - 2)
@@ -128,7 +131,7 @@ const CreateAppointment = () => {
                         const start = convertToHour(day.startTime);
                         const end = convertToHour(day.endTime);
                         const timesList = []
-
+                        //Genrate a list of time slots using employee shift times
                         for(let i = start; i < end; i++) {
                             let current = i;
                             if(current <= 12 ) {
@@ -145,6 +148,7 @@ const CreateAppointment = () => {
                         }
                     })
 
+                    //Filter our available times list based on our current appointments list
                     const filterDays = times.map(day => {
 
                         const availableTimes = day.times.filter(time => {
@@ -157,7 +161,7 @@ const CreateAppointment = () => {
                         day.times = availableTimes;
                         return day
                     })
-                    console.log(filterDays)
+                    //console.log(filterDays)
                     setAvailableDays(filterDays);
                 } else {
                     setAvailableDays([])
@@ -170,6 +174,8 @@ const CreateAppointment = () => {
             const monthList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
             const month = monthList[today.getMonth()];
             const currentSchedule = schedules.find(schedule => schedule.month === month);
+            //Once we have the correct schedule for the current month will find all unAvailable days
+            //For the selected employee
             if (currentSchedule !== undefined) {
                 const employee = currentSchedule.scheduledDays.find(employee => employee.name === form.employeeName);
 
@@ -198,10 +204,12 @@ const CreateAppointment = () => {
     //     console.log(form)
     // }, [form])
 
+    //Creates a select list for all available employees for the current month.
     const emps = employeeList.map((emp, index) => {
         return <AvailableEmployees key={index} name={emp}/>
     })
-    //Show availbale days 
+
+    //Show availbale days.
     function disableTiles({date}) {
         if(unAvailableDays.length >= 1){
             return unAvailableDays.find(day => day === date.getDate())
@@ -209,7 +217,7 @@ const CreateAppointment = () => {
             return date.getDay() !== 7
         }
     }
-
+    //Show availbale times.
     const times = availableDays.map(day => {
         if(day.date.getDate() === value.getDate()) {
             return day.times.map((time, index) => {
@@ -219,10 +227,13 @@ const CreateAppointment = () => {
         return true;
     })
 
+    //Used to submit our form and create our appointment.
+    //Upon success and email will be sent to the user contained appointment details.
     async function onSubmit(e) {
         e.preventDefault();
 
         const newAppointment = { ...form }
+        //Used to validate that a time and date have been selected
         if(newAppointment.date === Date || newAppointment.time === 0) {
             window.alert('Please select a date and time')
             return;
