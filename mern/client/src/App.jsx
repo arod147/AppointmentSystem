@@ -13,6 +13,7 @@ import Login from "./companyComponents/login";
 import CreateSchedule from "./companyComponents/createSchedule";
 import EditSchedule from "./companyComponents/editSchedule";
 import ConfirmationPage from "./components/confirmationPage";
+import ScheduleView from "./companyComponents/scheduleView";
 
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
         <Route path='/createSchedule' element={<CreateSchedule />}/>
         <Route path='/editSchedule' element={<EditSchedule />}/>
         <Route path='/confirmationPage' element={<ConfirmationPage/>}/>
+        <Route path='/scheduleView' element={<ScheduleView/>}/>
       </Routes>
       </div>
       <Footer />
